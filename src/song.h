@@ -37,7 +37,24 @@ class Song
         Song(std::string acousticness, std::string artists, std::string danceability, std::string duration_ms, std::string energy, std::string _explicit, std::string id, std::string instrumentalness, std::string key, std::string liveness, std::string loudness, std::string mode, std::string name, std::string popularity, std::string date, std::string speechiness, std::string tempo, std::string year, std::string happiness)
         {
             this->acousticness = stoi(acousticness);
-            this->artists = {};
+            int parseLocation = 0, beg = 0, end = 0, offset = 0;
+            std::vector<std::string> a;
+            while(parseLocation != -1 || parseLocation != artists.size() - 1)
+            {
+                beg = artists.find("'", parseLocation);
+                end = artists.find("'", beg + 1);
+                if(end == -1)
+                {
+                    end = artists.find("'", end + 1);
+                }
+                //No else because the above corrects the case where the name has an apostrophe in it already
+                if(end != -1)
+                {
+                    a.push_back(artists.substr(beg + 1, end - 1));
+                }
+                parseLocation = end + 1;
+            }
+            this->artists = a;
             this->danceability = stoi(danceability);
             this->duration_ms = stoi(duration_ms);
             this->energy = stoi(energy);
