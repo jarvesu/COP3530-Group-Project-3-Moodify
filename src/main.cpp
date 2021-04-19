@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+#include <cmath>
 using namespace std;
 
 float calcDistance(const vector<pair<bool, float>> criteria, Song song);
@@ -24,9 +24,27 @@ int main()
 }
 
 //Calculates distance based on the criteria specified from the input song and returns a float value.
-float calcDistance(const vector<pair<bool, float>> criteria, Song song)
+float calcDistance(const vector<pair<bool, float>> criteria, Song& song)
 {
-    return 0.0f;
+    vector<float> songCrit;
+    //acousticness, artists, danceability, duration_ms, energy, _explicit, id, instrumentalness, key, liveness, loudness, mode, name, popularity, date, speechiness, tempo, happiness)
+    songCrit.push_back(song.getAcousticness());
+    songCrit.push_back(song.getDanceability());
+    songCrit.push_back(song.getEnergy());
+    songCrit.push_back(song.getInstrumentalness());
+    songCrit.push_back(song.getLiveness());
+    songCrit.push_back(song.getLoudness());
+    songCrit.push_back(song.getSpeechiness());
+    songCrit.push_back(song.getTempo());
+    songCrit.push_back(song.getHappiness());
+
+    float running = 0.0f;
+    for(int i = 0; i < criteria.size(); ++i)
+    {
+        if(criteria[i].first)
+            running += pow(criteria[i].second - songCrit[i], 2);
+    }
+    return pow(running, 0.5);
 }
 //Returns the pointer to an array of pairs of floats for the distance and strings for the IDs with a size specified by the user.
 //Keeps only the arrSize smallest heaps, discards the rest.
