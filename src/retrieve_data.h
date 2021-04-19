@@ -2,7 +2,9 @@
 #include <fstream>
 #include "song.h"
 #include <iostream>
+#include <unordered_map>
 
+using namespace std;
 //Loads song from a row
 Song loadSong(std::ifstream& file, std::string& data)
 {
@@ -28,7 +30,7 @@ Song loadSong(std::ifstream& file, std::string& data)
 }
 
 //Loads data from file
-void loadSongs(std::vector<Song>& songs)
+void loadSongs(std::unordered_map<string, Song>& songs)
 {
     //Open File
     std::ifstream file;
@@ -49,7 +51,7 @@ void loadSongs(std::vector<Song>& songs)
     while(!file.eof())
     {
         Song newSong = loadSong(file, line);
-        songs.push_back(newSong);
+        songs.insert(make_pair(newSong.getID(), newSong));
     }
 
     //Close File
