@@ -10,15 +10,15 @@ using namespace std;
 void getUserChoices(bool options[]);
 void getUserInputs(bool options[], float inputs[]);
 bool checkInput(string choice);
-// float calcDistance(const vector<pair<bool, float>> criteria, Song song);
-// pair<float, string>* calcHeap(const unordered_map<string, Song>& songs, const int arrSize, const vector<pair<bool, float>> criteria);
-// void returnPlaylist(const pair<float, string>* heapPtr, const unordered_map<string, Song>& songs);
+float calcDistance(const vector<pair<bool, float>> criteria, Song song);
+pair<float, string>* calcHeap(const unordered_map<string, Song>& songs, const int arrSize, const vector<pair<bool, float>> criteria);
+void returnPlaylist(const pair<float, string>* heapPtr, const unordered_map<string, Song>& songs);
 
 int main()
 {
     unordered_map<string, Song> songs;
     vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
-    //loadSongs(songs);
+    loadSongs(songs);
 
     //Input Interface goes here
     cout << "Welcome to Moodify!" << endl << endl;
@@ -26,7 +26,8 @@ int main()
     bool runApplication = true;
     while(runApplication)
     {
-        cout << "Creating a new playlist..." << endl;
+        /* Get User Input */
+        cout << "Getting user input..." << endl;
         cout << "Do you want to include explicit songs? (Y/N): ";
         string choice;
         cin >> choice;
@@ -43,6 +44,13 @@ int main()
         for(int i = 0; i < 8; i++)
             criteria.push_back({options[i], inputs[i]});
 
+
+        /* Begin Playlist Creation */
+        cout << "Creating a new playlist..." << endl;
+
+
+
+        /* Exit if Needed */
         cout << "Do you want to create a new playlist? (Y/N): ";
         cin >> choice;
 
@@ -53,7 +61,6 @@ int main()
         }
     }
     
-
     return 0;
 }
 
