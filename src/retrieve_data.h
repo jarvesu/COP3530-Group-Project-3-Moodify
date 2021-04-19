@@ -1,0 +1,59 @@
+#pragma once
+#include <fstream>
+#include "song.h"
+#include <iostream>
+
+//Loads song from a row
+Song loadSong(std::ifstream& file, std::string& data)
+{
+    //19 Elements from CSV Row
+    std::string elements[19];
+    for(int i = 0; i < 19; i++)
+    {
+        if(i == 18) //If final element in row
+        {
+            file >> data;
+            elements[i] = data;
+            continue;
+        }
+
+        getline(file, data, ',');
+        elements[i] = data;
+    }
+
+    std::cout << "The acousticness of this song is: " << elements[0] << std::endl;
+    std::cout << "The arists in this song are: " << elements[1] << std::endl;
+
+    return Song(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], elements[6], elements[7], elements[8], elements[9], elements[10], elements[11], elements[12], elements[13], elements[14], elements[15], elements[16], elements[17], elements[18]);
+}
+
+//Loads data from file
+void loadSongs(std::vector<Song>& songs)
+{
+    //Open File
+    std::ifstream file;
+    std::string filename = "../tracks.csv";
+    file.open(filename);
+
+    if(!file)
+    {
+        std::cout << "Could not open file!" << std::endl;
+        return;
+    }
+
+    //Skips the first line with categories
+    std::string line;
+    std::getline(file, line);
+
+    //Go through each line and load corresponding songs
+    while(!file.eof())
+    {
+        Song newSong = loadSong(file, line);
+        songs.push_back(newSong);
+    }
+
+    //Close File
+    file.close();
+
+
+}

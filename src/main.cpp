@@ -1,13 +1,18 @@
+#include "song.h"
+#include "retrieve_data.h"
 #include <iostream>
-#include <fstream>
-#include <map>
-#include <string>
-
-using namespace std;
 
 int main()
 {
-    "Hello world!";
-    cout << "sample change";
+    std::vector<Song> songs;
+    loadSongs(songs);
+
+    songs.at(0).getArtists();
+
+
+
+    //Song newSong = Song(0, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0);
+
     return 0;
+    
 }
