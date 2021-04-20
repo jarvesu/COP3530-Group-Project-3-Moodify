@@ -23,24 +23,21 @@ Song loadSong(std::ifstream& file, std::string& data)
         elements[i] = data;
     }
 
-    std::cout << "The acousticness of this song is: " << elements[0] << std::endl;
-    std::cout << "The arists in this song are: " << elements[1] << std::endl;
-
     return Song(elements[0], elements[1], elements[2], elements[3], elements[4], elements[5], elements[6], elements[7], elements[8], elements[9], elements[10], elements[11], elements[12], elements[13], elements[14], elements[15], elements[16], elements[17], elements[18]);
 }
 
 //Loads data from file
-void loadSongs(std::unordered_map<string, Song>& songs)
+bool loadSongs(std::unordered_map<string, Song>& songs)
 {
     //Open File
     std::ifstream file;
-    std::string filename = "../tracks.csv";
+    std::string filename = "tracks.csv";
     file.open(filename);
 
     if(!file)
     {
         std::cout << "Could not open file!" << std::endl;
-        return;
+        return false;
     }
 
     //Skips the first line with categories
@@ -56,6 +53,5 @@ void loadSongs(std::unordered_map<string, Song>& songs)
 
     //Close File
     file.close();
-
-
+    return true;
 }
