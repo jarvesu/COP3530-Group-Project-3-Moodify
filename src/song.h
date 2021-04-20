@@ -79,5 +79,7 @@ public:
     float getSpeechiness() { return speechiness; }
     float getTempo() { return tempo; }
     float getHappiness() { return happiness; }
+    float getDistance() { return distance; }
+
 
 };
