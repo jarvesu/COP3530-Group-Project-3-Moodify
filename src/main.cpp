@@ -13,9 +13,9 @@ void getUserInputs(bool options[], float inputs[]);
 bool checkInput(string choice);
 void heapInsert(pair<float, string>* heap, pair<float, string> toInsert, int& heapSize);
 float calcDistance(const vector<pair<bool, float>> criteria, Song& song);
-pair<float, string>* extractMin(pair<float, string>* arr, int size);
+pair<float, string>* extractMin(pair<float, string>* arr, int& size);
 pair<float, string>* calcHeap(const unordered_map<string, Song>& songs, const vector<pair<bool, float>> criteria, const int arrSize);
-void returnPlaylist(pair<float, string>* heapPtr, const unordered_map<string, Song>& songs);
+void returnPlaylist(pair<float, string>* heapPtr, const unordered_map<string, Song>& songs, int arrSize);
 //pair<float, string>* extractMin(pair<float, string>* arr, int size);
 int main()
 {
@@ -214,7 +214,7 @@ float calcDistance(const vector<pair<bool, float>> criteria, Song& song)
 }
 
 //Extracts the minimum element from the heap
-pair<float, string>* extractMin(pair<float, string>* arr, int size)
+pair<float, string>* extractMin(pair<float, string>* arr, int& size)
 {
     arr[0] = arr[size-1];
     arr[size-1] = { };
@@ -296,7 +296,7 @@ void returnPlaylist(pair<float, string>* heapPtr, const unordered_map<string, So
     for(int i = 0; i < arrSize; i++)
     {
         //Get ID and Song
-        string ID = heapPtr->second;
+        string ID = extractMin(heapPtr, arrSize)->second;
 
         Song currSong = songs.find(ID)->second;
 
@@ -307,5 +307,5 @@ void returnPlaylist(pair<float, string>* heapPtr, const unordered_map<string, So
             title = title.substr(0, 32);
             title += "...";
         }
-
+    }
 }
