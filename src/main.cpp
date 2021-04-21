@@ -28,13 +28,14 @@ int main()
     bool runApplication = true;
     while(runApplication)
     {
+        vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
         /* Get User Input */
         cout << "Getting user input..." << endl;
-        cout << "Do you want to include explicit songs? (Y/N): ";
-        string choice;
-        cin >> choice;
-        bool _explicit = (choice == "Y") ? true : false;
-
+        string numSongsStr;
+        cout << "How many songs do you want in the playlist: ";
+        cin >> numSongsStr;
+        if(!checkInput(numSongsStr)) { cout << "Please enter a valid number" << endl << endl; continue;}
+        int numSongs = int(stof(numSongsStr));
 
         cout << endl << "For each of the following indicate which you would like to include (Y/N)" << endl << endl;
         bool options[8];
