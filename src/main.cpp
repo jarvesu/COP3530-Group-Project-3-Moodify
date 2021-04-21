@@ -11,7 +11,7 @@ using namespace std;
 void getUserChoices(bool options[]);
 void getUserInputs(bool options[], float inputs[]);
 bool checkInput(string choice);
-void heapInsert(pair<float, string>* heap, pair<float, string> toInsert, int& heapSize)
+void heapInsert(pair<float, string>* heap, pair<float, string> toInsert, int& heapSize);
 float calcDistance(const vector<pair<bool, float>> criteria, Song& song);
 pair<float, string>* extractMin(pair<float, string>* arr, int size);
 pair<float, string>* calcHeap(const unordered_map<string, Song>& songs, const vector<pair<bool, float>> criteria, const int arrSize);
@@ -19,13 +19,15 @@ void returnPlaylist(pair<float, string>* heapPtr, const unordered_map<string, So
 //pair<float, string>* extractMin(pair<float, string>* arr, int size);
 int main()
 {
-    unordered_map<string, Song> songs;
-    vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
-    loadSongs(songs);
-
+    bool runApplication = true;
     cout << "Welcome to Moodify!" << endl << endl;
 
-    bool runApplication = true;
+    cout << "Loading songs..." << endl;
+    unordered_map<string, Song> songs;
+    loadSongs(songs);
+
+    cout << "Songs loaded." << endl << endl;
+
     while(runApplication)
     {
         vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
@@ -36,6 +38,11 @@ int main()
         cin >> numSongsStr;
         if(!checkInput(numSongsStr)) { cout << "Please enter a valid number" << endl << endl; continue;}
         int numSongs = int(stof(numSongsStr));
+        cout << "Do you want to include explicit songs? (Y/N): ";
+        string choice;
+        cin >> choice;
+        bool _explicit = (choice == "Y") ? true : false;
+
 
         cout << endl << "For each of the following indicate which you would like to include (Y/N)" << endl << endl;
         bool options[8];
