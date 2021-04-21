@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 #include <cmath>
+#include <iomanip>
+#include <queue>
+
 using namespace std;
 
 void getUserChoices(bool options[]);
@@ -16,17 +19,30 @@ void returnPlaylist(const pair<float, string>* heapPtr, const unordered_map<stri
 //pair<float, string>* extractMin(pair<float, string>* arr, int size);
 int main()
 {
-    unordered_map<string, Song> songs;
-    vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
-    loadSongs(songs);
-
+    bool runApplication = true;
     cout << "Welcome to Moodify!" << endl << endl;
 
-    bool runApplication = true;
-    while (runApplication)
+    cout << "Loading songs..." << endl;
+    unordered_map<string, Song> songs;
+    bool loaded = loadSongs(songs);
+    if(!loaded)
     {
+        cout << "Error loading songs!";
+        runApplication = false;
+    }
+
+    cout << "Songs loaded." << endl << endl;
+
+    while(runApplication)
+    {
+        vector<pair<bool, float>> criteria; //Vector containing whether or not to use the nth criteria, and the value given for said criteria.
         /* Get User Input */
         cout << "Getting user input..." << endl;
+        string numSongsStr;
+        cout << "How many songs do you want in the playlist: ";
+        cin >> numSongsStr;
+        if(!checkInput(numSongsStr)) { cout << "Please enter a valid number" << endl << endl; continue;}
+        int numSongs = int(stof(numSongsStr));
         cout << "Do you want to include explicit songs? (Y/N): ";
         string choice;
         cin >> choice;
@@ -40,21 +56,26 @@ int main()
         float inputs[8];
         getUserInputs(options, inputs);
 
-        for (int i = 0; i < 8; i++)
-            criteria.push_back({ options[i], inputs[i] });
+        for(int i = 0; i < 8; i++)
+            criteria.push_back({options[i], inputs[i]});
 
 
         /* Begin Playlist Creation */
         cout << "Creating a new playlist..." << endl;
 
-        //Continue from here
-        priority_queue <float, string> = calcHeap(songs);
+        //Get the songs that most match user needs
+        pair<float, string>* minDistanceIDs;
+        minDistanceIDs = calcHeap(songs, numSongs, criteria);
+
+        //Print the songs
+        //returnPlaylist(minDistanceIDs, songs);
+
 
         /* Exit if Needed */
         cout << "Do you want to create a new playlist? (Y/N): ";
         cin >> choice;
 
-        if (choice == "N")
+        if(choice == "N")
         {
             cout << endl << "Thank you for using Moodify! Have a nice day";
             runApplication = false;
@@ -107,61 +128,61 @@ void getUserChoices(bool options[])
 void getUserInputs(bool options[], float inputs[])
 {
     string choice;
-    if (options[0])
+    if(options[0])
     {
         cout << "Acousticness: ";
         cin >> choice;
-        inputs[0] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[0] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[1])
+    if(options[1])
     {
         cout << "Danceability: ";
         cin >> choice;
-        inputs[1] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[1] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[2])
+    if(options[2])
     {
         cout << "Energy: ";
         cin >> choice;
-        inputs[2] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[2] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[3])
+    if(options[3])
     {
         cout << "Instrumentalness: ";
         cin >> choice;
-        inputs[3] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[3] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[4])
+    if(options[4])
     {
         cout << "Liveness: ";
         cin >> choice;
-        inputs[4] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[4] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[5])
+    if(options[5])
     {
         cout << "Speechiness: ";
         cin >> choice;
-        inputs[5] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[5] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[6])
+    if(options[6])
     {
         cout << "Happiness: ";
         cin >> choice;
-        inputs[6] = (checkInput(choice)) ? stof(choice) / 100 : 0;
+        inputs[6] = (checkInput(choice)) ? stof(choice)/100 : 0;
     }
 
-    if (options[7])
+    if(options[7])
     {
         cout << "Tempo (0-250 BPM): ";
         cin >> choice;
         float tempo = (checkInput(choice)) ? stof(choice) : 0;
-        inputs[7] = 1 / tempo;
+        inputs[7] = 1/tempo;
     }
 
     cout << endl;
@@ -169,8 +190,8 @@ void getUserInputs(bool options[], float inputs[])
 
 bool checkInput(string choice)
 {
-    for (char i : choice)
-        if (!isdigit(i))
+    for(char i : choice)
+        if(!isdigit(i))
             return false;
     return true;
 }
@@ -189,81 +210,85 @@ float calcDistance(const vector<pair<bool, float>> criteria, Song& song)
     songCrit.push_back(song.getHappiness());
 
     float running = 0.0f;
-    for (int i = 0; i < criteria.size(); ++i)
+    for(int i = 0; i < criteria.size(); ++i)
     {
-        if (criteria[i].first)
+        if(criteria[i].first)
             running += pow(criteria[i].second - songCrit[i], 2);
     }
     return pow(running, 0.5);
 }
 /*
-//Extracts the minimum element from the heap
-pair<float, string>* extractMin(pair<float, string>* arr, int size)
-{
-    arr[0] = arr[size-1];
-    arr[size-1] = { };
-    //Sort array heapwise
-    int i = 0;
-    while((arr[i].first > arr[2*i+1].first || arr[i].first > arr[2*i+1].first && i < (size-3)/2))
-    {
-
-        if(arr[2*i+1] > arr[2*i+2])
-        {
-            float tempFloat = arr[i].first;
-            string tempStr = arr[i].second;
-            arr[i].first = arr[2*i+2].first;
-            arr[i].second = arr[2*i+2].second;
-            arr[2*i+2].first = tempFloat;
-            arr[2*i+2].second = tempStr;
-
-        }
-        else
-        {
-            float tempFloat = arr[i].first;
-            string tempStr = arr[i].second;
-            arr[i].first = arr[2*i+1].first;
-            arr[i].second = arr[2*i+1].second;
-            arr[2*i+1].first = tempFloat;
-            arr[2*i+1].second = tempStr;
-        }
-    }
-    return arr;
-}
-*/
-//Returns the pointer to an array of pairs of floats for the distance and strings for the IDs with a size specified by the user.
-//Keeps only the arrSize smallest heaps, discards the rest.
-
-/*struct comparator {
+struct comparator {
     float operator() (const Song& s1, const Song& s2) {
         return s1.getDistance() > s2.getDistance();
     }
-};*/
-
+};
+*/
 typedef pair<float, string> pM;
 
-priority_queue <float, string>* calcHeap(const unordered_map<string, Song>& songs_) {
+ priority_queue <pM, vector<pM>, greater<pM> >* calcHeap(const unordered_map<string, Song>& songs_, const vector<pair<bool, float>> criteria) {
     priority_queue <pM, vector<pM>, greater<pM> > mH;
-    unordered_map<std::string, int>::iterator it = songs_.begin();
+    auto ptr = &mH;
+    auto it = songs_.begin();
     // Iterate over the map using iterator
     while (it != songs_.end())
     {
-        float dist = calcDistance(criteria, songs_->second);
-        mH.push(make_pair(dist, songs_->first);
+        float dist = calcDistance(criteria, it->second);
+        mH.push(make_pair(dist, it->first));
         it++;
     }
-    return *mH;
-}
-/*pair<float, string>* calcHeap(const unordered_map<string, Song>& songs, const int arrSize, const vector<pair<bool, float>> criteria)
-{
-    //pair<float, string>* ptr = new pair<float, string>[arrSize]();
-    //if the array is empty, set arr[0] equal to the current song's distance.
-    //while not in position, shift around
-    //if value tries to shift OOB, drop the value from importance
-
     return ptr;
-}*/
-//Prints out the playlist generated by the heap.
-void returnPlaylist(const pair<float, string>* heapPtr, const unordered_map<string, Song>& songs)
-{
+}
 
+//Prints out the playlist generated by the heap.
+void returnPlaylist(const pair<float, string>* heapPtr, const unordered_map<string, Song>& songs, int arrSize)
+{
+    //Setup the Table
+    cout << setw(60) << "Your New Spotify Playlist" << endl;
+    cout << left
+    << setw(5) << "No."
+    << setw(40) << "Title"
+    << setw(50) << "Artist"
+    << setw(10) << "Duration"
+    << setw(60) << "Link"
+    << endl;
+
+    //Iterate through the heap
+    for(int i = 0; i < arrSize; i++)
+    {
+        //Get ID and Song
+        string ID = heapPtr[i].second;
+        Song currSong = songs.find(ID)->second;
+
+        //Get Title for Resizing
+        string title = currSong.getName();
+        if(title.size() > 35)
+        {
+            title = title.substr(0, 32);
+            title += "...";
+        }
+
+        //Get Artists for Resizing
+        vector<string> artistVec = currSong.getArtists();
+        string artists = artistVec.at(0);
+        for(int i = 1; i < artistVec.size(); i++)
+            artists += ", " + artistVec.at(i);
+        if(artists.size() > 45)
+        {
+            artists = artists.substr(0, 42);
+            artists += "...";
+        }
+
+        //Get Duration
+        int duration = currSong.getDuration();
+
+        cout << left
+        << setw(5) << i
+        << setw(40) << title
+        << setw(50) << artists
+        << setw(10) << duration / 60 << ":" << duration % 60
+        << setw(60) << "https://open.spotify.com/track/" << currSong.getID()
+        << endl;
+    }
+    cout << endl << endl;
 }
