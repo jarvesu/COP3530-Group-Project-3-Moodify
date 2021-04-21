@@ -3,6 +3,7 @@
         "string": "cpp",
         "utility": "cpp",
         "xhash": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "xstring": "cpp"
     }
 }
