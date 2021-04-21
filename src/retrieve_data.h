@@ -8,14 +8,16 @@ using namespace std;
 //Loads song from a row
 Song loadSong(std::ifstream& file, std::string& data)
 {
-    //19 Elements from CSV Row, Only Need 
+    //19 Elements from CSV Row, Only Need 13
     std::string elements[13];
 
     getline(file, data, ',');
     elements[0] = data; //Acousticness
 
-    getline(file, data, ',');
+    getline(file, data, ']');
     elements[1] = data; //Artists
+
+    getline(file, data, ',');
 
     getline(file, data, ',');
     elements[2] = data; //Danceability
@@ -68,8 +70,9 @@ bool loadSongs(std::unordered_map<string, Song>& songs)
 {
     //Open File
     std::ifstream file;
-    std::string filename = "tracks.csv";
+    std::string filename = "C:\\Users\\gioco\\Dropbox\\My PC (Gio)\\Documents\\Coding\\VisualStudioCode\\DataStructuresProjects\\Final Project\\tracks.csv";
     file.open(filename);
+    cout << "File Opened..." << endl;
 
     if(!file)
     {
@@ -82,10 +85,14 @@ bool loadSongs(std::unordered_map<string, Song>& songs)
     std::getline(file, line);
 
     //Go through each line and load corresponding songs
+    int i = 0;
     while(!file.eof())
     {
         Song newSong = loadSong(file, line);
         songs.insert(make_pair(newSong.getID(), newSong));
+        i++;
+        if(i == 100)
+            break;
     }
 
     //Close File
